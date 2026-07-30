@@ -23,6 +23,11 @@ Label each observed feature as one of:
 Never describe “same style” as sufficient. Name the transferable components
 and the content that must be ignored.
 
+If the target project already has an accepted
+`.codex/figure-style.toml`, treat that profile as the style authority. Analyze
+a new reference for figure-specific composition and content organization, not
+as permission to replace the established project identity.
+
 ## Build a style fingerprint
 
 Use this worksheet for dense references:
@@ -80,6 +85,10 @@ Use the latest user-accepted artifact as the style authority. Another session
 may supply scientific facts or an alternative design option, but its aesthetic
 preferences do not override the current accepted style without explicit user
 confirmation.
+
+For a multi-figure project, persist the accepted fingerprint in the canonical
+project style profile rather than reconstructing it from conversation history
+for every figure.
 
 If content no longer fits the locked silhouette, first redistribute it within
 the existing grammar: reuse a bridge, split a crowded panel, move calibration

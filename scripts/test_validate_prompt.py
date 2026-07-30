@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import unittest
 
+from test_validate_style_profile import VALID_PROFILE
 from validate_prompt import validate_text
 
 
@@ -81,6 +82,29 @@ palette and color mappings, typography, icon family, and all other content.
         errors, warnings, _ = validate_text(prompt, iteration=True)
         self.assertFalse(errors)
         self.assertFalse(any("style lock" in item for item in warnings))
+
+    def test_style_profile_requires_binding_section(self) -> None:
+        errors, _, _ = validate_text(BASE_PROMPT, style_profile=VALID_PROFILE)
+        self.assertTrue(any("PROJECT STYLE PROFILE" in item for item in errors))
+
+    def test_style_profile_requires_profile_tokens(self) -> None:
+        prompt = BASE_PROMPT + """
+PROJECT STYLE PROFILE
+Profile ID: "example-paper"
+Profile version: "1"
+"""
+        errors, _, _ = validate_text(prompt, style_profile=VALID_PROFILE)
+        self.assertTrue(any("required project-style tokens" in item for item in errors))
+
+    def test_complete_style_profile_binding(self) -> None:
+        prompt = BASE_PROMPT + """
+PROJECT STYLE PROFILE
+Profile ID: "example-paper"
+Profile version: "1"
+Use #FFFFFF, Example Display, and #F2F2F2 as project-wide invariants.
+"""
+        errors, _, _ = validate_text(prompt, style_profile=VALID_PROFILE)
+        self.assertFalse(errors)
 
 
 if __name__ == "__main__":

@@ -165,6 +165,15 @@ Image 1: <style reference / edit target / content source>.
 Use: <specific transferable features>.
 Ignore: <scientific labels, page chrome, screenshot prose, unrelated content>.
 
+PROJECT STYLE PROFILE — REQUIRED FOR MULTI-FIGURE PROJECTS
+Include when a canonical project profile exists or the project will contain
+multiple figures.
+Profile ID: "<profile_id>"
+Profile version: "<profile_version>"
+Status: "<draft / accepted>"
+Materialize the profile's canvas family, typography, palette, density, icons,
+containers, arrows, background, and anti-style below.
+
 REVISION SCOPE AND STYLE LOCK
 Include only for iterations.
 Change only:
@@ -229,6 +238,8 @@ Do not:
 FINAL VALIDATION
 Verify:
 - semantic spine;
+- current project style profile ID and version;
+- cross-figure typography, palette, density, icons, borders, and arrows;
 - model count, depth, hops, branches, and output dimension;
 - exact text;
 - evidence states;

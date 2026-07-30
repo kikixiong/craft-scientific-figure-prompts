@@ -6,7 +6,11 @@ from __future__ import annotations
 import argparse
 import re
 import sys
+import tomllib
 from pathlib import Path
+from typing import Any
+
+from validate_style_profile import load_profile, validate_profile
 
 
 SECTION_PATTERNS = {
@@ -23,6 +27,7 @@ PLACEHOLDER_RE = re.compile(r"<[^>\n]{1,100}>|\[(?:TODO|TBD|INSERT|PLACEHOLDER)[
 ITERATION_SECTION_RE = re.compile(
     r"(?im)^(?:REVISION\s+SCOPE(?:\s+AND)?\s+STYLE\s+LOCK|STYLE\s+LOCK)\b"
 )
+STYLE_PROFILE_SECTION_RE = re.compile(r"(?im)^PROJECT\s+STYLE\s+PROFILE\b")
 OPERATIONAL_ID_RE = re.compile(
     r"(?i)\b(?:job|run|experiment)\s*(?:id\s*)?(?:[#~:_-]\s*)?\d{4,}\b"
 )
@@ -76,6 +81,11 @@ def parse_args() -> argparse.Namespace:
         action="store_true",
         help="Require a revision-scope/style-lock contract and audit its invariants",
     )
+    parser.add_argument(
+        "--style-profile",
+        type=Path,
+        help="Validate project-wide style binding against figure-style.toml",
+    )
     return parser.parse_args()
 
 
@@ -85,7 +95,11 @@ def parse_count(token: str) -> int:
 
 
 def validate_text(
-    text: str, *, allow_placeholders: bool = False, iteration: bool = False
+    text: str,
+    *,
+    allow_placeholders: bool = False,
+    iteration: bool = False,
+    style_profile: dict[str, Any] | None = None,
 ) -> tuple[list[str], list[str], int]:
     errors: list[str] = []
     warnings: list[str] = []
@@ -96,6 +110,41 @@ def validate_text(
 
     if iteration and not ITERATION_SECTION_RE.search(text):
         errors.append("iteration prompt missing REVISION SCOPE AND STYLE LOCK section")
+
+    if style_profile is not None:
+        profile_errors, profile_warnings = validate_profile(style_profile)
+        errors.extend(f"style profile: {item}" for item in profile_errors)
+        warnings.extend(f"style profile: {item}" for item in profile_warnings)
+
+        if not STYLE_PROFILE_SECTION_RE.search(text):
+            errors.append("prompt missing PROJECT STYLE PROFILE section")
+
+        profile_id = style_profile.get("profile_id")
+        if isinstance(profile_id, str) and profile_id.lower() not in text.lower():
+            errors.append(f"prompt does not bind style profile ID: {profile_id}")
+
+        profile_version = style_profile.get("profile_version")
+        if isinstance(profile_version, int) and not re.search(
+            rf"(?i)profile\s+version\s*:\s*[\"']?{profile_version}\b", text
+        ):
+            errors.append(
+                f"prompt does not bind style profile version: {profile_version}"
+            )
+
+        validation = style_profile.get("validation", {})
+        if isinstance(validation, dict):
+            required_tokens = validation.get("required_prompt_tokens", [])
+            if isinstance(required_tokens, list):
+                missing_tokens = [
+                    str(token)
+                    for token in required_tokens
+                    if str(token).lower() not in text.lower()
+                ]
+                if missing_tokens:
+                    errors.append(
+                        "prompt omits required project-style tokens: "
+                        + ", ".join(missing_tokens[:8])
+                    )
 
     if not allow_placeholders:
         placeholders = sorted(set(PLACEHOLDER_RE.findall(text)))
@@ -219,11 +268,24 @@ def main() -> int:
         print(f"ERROR: prompt file not found: {args.prompt}")
         return 2
 
+    style_profile: dict[str, Any] | None = None
+    if args.style_profile is not None:
+        if not args.style_profile.is_file():
+            print(f"ERROR: style profile not found: {args.style_profile}")
+            return 2
+        try:
+            style_profile = load_profile(args.style_profile)
+        except tomllib.TOMLDecodeError as exc:
+            print("FAIL")
+            print(f"ERROR: invalid style-profile TOML: {exc}")
+            return 1
+
     text = args.prompt.read_text(encoding="utf-8")
     errors, warnings, word_count = validate_text(
         text,
         allow_placeholders=args.allow_placeholders,
         iteration=args.iteration,
+        style_profile=style_profile,
     )
 
     if errors:

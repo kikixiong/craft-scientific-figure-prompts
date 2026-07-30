@@ -1,6 +1,6 @@
 ---
 name: craft-scientific-figure-prompts
-description: Analyze reference figures and their prompts, extract transferable visual and organizational grammar, and produce robust model-agnostic prompts for scientific overview figures, method diagrams, architecture schematics, graphical abstracts, and research posters. Use when Codex must learn a figure's style or prompt structure, adapt that structure to a paper, thesis, proposal, or technical project, rewrite or audit a long image-generation prompt, preserve scientific evidence states, or iteratively improve a generated figure without copying the reference's scientific content.
+description: Analyze reference figures and their prompts, extract transferable visual and organizational grammar, maintain a project-wide style profile across multiple figures, and produce robust model-agnostic prompts for scientific overview figures, method diagrams, architecture schematics, graphical abstracts, and research posters. Use when Codex must learn or preserve figure style, adapt it to a paper, thesis, proposal, or technical project, rewrite or audit a long image-generation prompt, keep a multi-figure project visually consistent, preserve scientific evidence states, or iteratively improve a generated figure without copying the reference's scientific content.
 ---
 
 # Craft Scientific Figure Prompts
@@ -41,6 +41,29 @@ applicable image-generation workflow separately.
 
 ## Follow the core workflow
 
+### 0. Load the project style authority
+
+For any project that has or may have multiple figures, look for:
+
+```text
+<project-root>/.codex/figure-style.toml
+```
+
+If it exists, read it completely before drafting or revising a prompt. Bind its
+profile ID and version in the prompt, and materialize its font, palette,
+density, icon, container, arrow, background, and anti-style invariants. The
+file reference alone is insufficient because the image model cannot read it.
+
+If it does not exist, create a draft from
+[project-figure-style.toml](assets/project-figure-style.toml) after inspecting
+the selected reference and user preferences. Mark it accepted only after the
+user approves the style or an artifact using it. Never overwrite an accepted
+profile silently; increment its version only for an explicitly approved
+project-wide style change.
+
+Read [project-style-profile.md](references/project-style-profile.md) for
+profile lifecycle, precedence, figure-specific exceptions, and validation.
+
 ### 1. Inspect the reference
 
 View every reference image at useful detail. If the input is a screenshot
@@ -66,6 +89,10 @@ Record exact invariants for aspect ratio, macro silhouette, panel count,
 internal whitespace or density, dominant palette, typography, icon family,
 border grammar, and background. An omitted style property remains preserved;
 silence is not permission to redesign it.
+
+When an accepted project style profile exists, use it as the visual authority.
+A figure-specific reference may supply composition ideas, but may not silently
+replace project fonts, palette, density, icons, borders, arrows, or background.
 
 Read [reference-analysis.md](references/reference-analysis.md) when the
 reference is dense, contains multiple visual systems, or needs a formal
@@ -171,18 +198,19 @@ Order the prompt from global invariants to local detail:
 
 1. use case, asset type, and primary request;
 2. input-image roles and content-isolation rule;
-3. revision scope and style lock when iterating;
-4. scientific content contract;
-5. visible-artifact hygiene;
-6. canvas and background;
-7. macro visual structure;
-8. typography and exact text;
-9. semantic color and icon language;
-10. one section per panel, lane, or module;
-11. arrow and line rules;
-12. density and legibility;
-13. strict negative constraints;
-14. final validation checklist.
+3. project style profile ID, version, and invariants;
+4. revision scope and style lock when iterating;
+5. scientific content contract;
+6. visible-artifact hygiene;
+7. canvas and background;
+8. macro visual structure;
+9. typography and exact text;
+10. semantic color and icon language;
+11. one section per panel, lane, or module;
+12. arrow and line rules;
+13. density and legibility;
+14. strict negative constraints;
+15. final validation checklist.
 
 Use controlled redundancy only at hierarchy boundaries:
 
@@ -196,12 +224,13 @@ resolve ambiguity, not because they are long.
 Apply this conflict priority:
 
 1. scientific truth and evidence status;
-2. exact required text;
-3. causal or procedural structure;
-4. legibility and non-overlap;
-5. reference silhouette;
-6. visual style;
-7. decoration.
+2. explicit current-turn user instruction;
+3. exact required text;
+4. causal or procedural structure;
+5. accepted project style profile;
+6. legibility and non-overlap;
+7. figure-specific reference suggestions;
+8. decoration.
 
 If a lower-priority rule conflicts with a higher-priority rule, preserve the
 higher-priority rule and say so in the prompt.
@@ -225,6 +254,8 @@ Add constraints against the generator's most plausible mistakes:
 - operational IDs, paths, hashes, or timestamps leaking into visible content;
 - accepted palette, density, aspect ratio, or silhouette drifting during a
   local revision;
+- different figures in one project silently using different fonts, palettes,
+  icon families, border grammar, or density;
 - model layers becoming separate models or outputs;
 - equal layer, hop, and output counts becoming a false one-to-one mapping;
 - prediction-space residuals becoming skip connections or improvement claims.
@@ -247,6 +278,15 @@ For a revision prompt that contains an explicit style lock, run:
 python scripts/validate_prompt.py --iteration <prompt.md>
 ```
 
+When a project style profile exists, validate both artifacts:
+
+```bash
+python scripts/validate_style_profile.py <project-root>/.codex/figure-style.toml
+python scripts/validate_prompt.py \
+  --style-profile <project-root>/.codex/figure-style.toml \
+  <prompt.md>
+```
+
 Fix all errors. Review warnings with judgment; a warning can be acceptable
 when the task intentionally omits that feature.
 
@@ -263,6 +303,8 @@ Then perform a semantic audit:
 - Are unknowns visibly unknown rather than aesthetically completed?
 - Is operational provenance absent from visible method content?
 - For an iteration, did every preserved style and density invariant survive?
+- Does the prompt bind the current project profile version and remain visually
+  coherent with previously accepted project figures?
 
 Read [audit-and-iteration.md](references/audit-and-iteration.md) for the full
 rubric and targeted revision protocol.
@@ -271,10 +313,11 @@ rubric and targeted revision protocol.
 
 Unless the user requests another format, return:
 
-1. a concise **learned visual grammar** summary;
-2. a **scientific content contract**;
-3. the complete copy-paste **production prompt**;
-4. a short **audit note** listing assumptions and intentionally pending items.
+1. the project style profile path, ID, and version when one is used;
+2. a concise **learned visual grammar** summary;
+3. a **scientific content contract**;
+4. the complete copy-paste **production prompt**;
+5. a short **audit note** listing assumptions and intentionally pending items.
 
 When saving files, use descriptive names such as:
 

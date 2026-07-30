@@ -22,6 +22,7 @@ Score each dimension from 0 to 2:
 | Exact text | uncontrolled | partial list | complete verbatim inventory |
 | Visual semantics | decorative color | mixed | stable mappings |
 | Style and density continuity | unrequested redesign | partial preservation | explicit lock and exact preservation |
+| Cross-figure continuity | each figure restyled | partial family resemblance | current project profile bound |
 | Status integrity | misleading | ambiguous | evidence-licensed and scoped |
 | Artifact hygiene | operational metadata visible | partly filtered | semantic labels only |
 | Negative constraints | generic | some risks | target-specific failure prevention |
@@ -30,7 +31,8 @@ Score each dimension from 0 to 2:
 Treat a zero in source grounding, content contract, or status integrity as a
 blocker. For architecture figures, also treat zero architecture semantics as a
 blocker. For iterations, treat zero style and density continuity as a blocker.
-Aim for at least 21/26 before delivery.
+For multi-figure projects, treat zero cross-figure continuity as a blocker.
+Aim for at least 23/28 before delivery.
 
 ## Generated-figure audit
 
@@ -44,9 +46,11 @@ Inspect in this order:
 5. **Artifact hygiene:** job/run IDs, paths, hashes, timestamps, UI chrome.
 6. **Structural fidelity:** panel count, lanes, shared versus separate objects.
 7. **Density fidelity:** module scale, whitespace rhythm, compactness.
-8. **Visual fidelity:** palette, icon family, typography, border grammar.
-9. **Legibility:** font size, overlap, whitespace, line crossings.
-10. **Anti-style compliance:** background, shadows, gradients, UI framing.
+8. **Cross-figure continuity:** current profile version, fonts, palette, icons,
+   borders, arrows, density, and background.
+9. **Visual fidelity:** palette, icon family, typography, border grammar.
+10. **Legibility:** font size, overlap, whitespace, line crossings.
+11. **Anti-style compliance:** background, shadows, gradients, UI framing.
 
 Do not accept a visually attractive figure with a scientific or evidence-state
 error.
