@@ -1,0 +1,54 @@
+profile_version = 1
+profile_id = "REPLACE_ME"
+project = "REPLACE_ME"
+status = "draft"
+authority = "REPLACE_ME"
+updated = "YYYY-MM-DD"
+
+[canvas]
+default_aspect_ratio = "REPLACE_ME"
+allowed_aspect_ratios = ["REPLACE_ME"]
+orientation = "REPLACE_ME"
+background = "#FFFFFF"
+margin_behavior = "REPLACE_ME"
+
+[typography]
+display = "REPLACE_ME"
+label = "REPLACE_ME"
+technical = "REPLACE_ME"
+equation = "REPLACE_ME"
+casing = "REPLACE_ME"
+
+[palette]
+dominant = ["#FFFFFF"]
+accents = ["#000000"]
+semantic = ["REPLACE_ME"]
+forbidden = ["REPLACE_ME"]
+
+[density]
+level = "REPLACE_ME"
+internal_whitespace = "REPLACE_ME"
+label_budget = "REPLACE_ME"
+module_scale = "REPLACE_ME"
+
+[icons]
+family = "REPLACE_ME"
+outline = "REPLACE_ME"
+shading = "REPLACE_ME"
+
+[containers]
+border = "REPLACE_ME"
+title_tabs = "REPLACE_ME"
+corner_style = "REPLACE_ME"
+panel_fill_behavior = "REPLACE_ME"
+
+[arrows]
+major = "REPLACE_ME"
+minor = "REPLACE_ME"
+crossing_policy = "REPLACE_ME"
+
+[anti_style]
+forbidden = ["REPLACE_ME"]
+
+[validation]
+required_prompt_tokens = ["REPLACE_ME"]

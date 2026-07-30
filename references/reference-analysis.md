@@ -4,6 +4,7 @@
 
 - [Separate content from grammar](#separate-content-from-grammar)
 - [Build a style fingerprint](#build-a-style-fingerprint)
+- [Freeze accepted style during iteration](#freeze-accepted-style-during-iteration)
 - [Infer the prompt's control strategy](#infer-the-prompts-control-strategy)
 - [Handle weak or incomplete references](#handle-weak-or-incomplete-references)
 
@@ -21,6 +22,11 @@ Label each observed feature as one of:
 
 Never describe “same style” as sufficient. Name the transferable components
 and the content that must be ignored.
+
+If the target project already has an accepted
+`.codex/figure-style.toml`, treat that profile as the style authority. Analyze
+a new reference for figure-specific composition and content organization, not
+as permission to replace the established project identity.
 
 ## Build a style fingerprint
 
@@ -44,6 +50,51 @@ Use this worksheet for dense references:
 Distinguish observation from inference. If a precise font, color, or stroke
 cannot be known from the image, describe the closest visual role instead of
 claiming certainty.
+
+Quantify density with observable proxies rather than adjectives alone:
+
+- approximate internal whitespace percentage;
+- modules per panel;
+- label-length budget;
+- node and edge budget;
+- panel-to-gutter ratio;
+- average connector length;
+- whether panels are compact, balanced, or intentionally sparse.
+
+## Freeze accepted style during iteration
+
+When revising an accepted prompt or generated figure, create this ledger before
+editing:
+
+| Property | Accepted state | Change authorized? |
+|---|---|---|
+| Canvas/aspect | | yes/no |
+| Silhouette/panel geometry | | |
+| Information density | | |
+| Dominant palette | | |
+| Typography | | |
+| Icon family | | |
+| Borders/tabs/arrows | | |
+| Background/anti-style | | |
+
+Default every blank authorization cell to **no**. A scientific correction does
+not authorize changing aspect ratio, density, palette, typography, or icon
+language.
+
+Use the latest user-accepted artifact as the style authority. Another session
+may supply scientific facts or an alternative design option, but its aesthetic
+preferences do not override the current accepted style without explicit user
+confirmation.
+
+For a multi-figure project, persist the accepted fingerprint in the canonical
+project style profile rather than reconstructing it from conversation history
+for every figure.
+
+If content no longer fits the locked silhouette, first redistribute it within
+the existing grammar: reuse a bridge, split a crowded panel, move calibration
+or evaluation to a real second phase, or shorten labels. Change the silhouette
+only when scientific correctness cannot otherwise be preserved, and state the
+tradeoff before doing so.
 
 ## Infer the prompt's control strategy
 
@@ -76,3 +127,5 @@ usually follows:
   explicit placeholders instead of fabricating content.
 - If the reference and supplied prompt disagree, report the mismatch and
   prioritize the user's requested output over either artifact.
+- If multiple sessions disagree about style, preserve the current
+  user-accepted artifact and treat the other styles as unselected alternatives.
