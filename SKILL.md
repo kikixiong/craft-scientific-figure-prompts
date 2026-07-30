@@ -24,6 +24,17 @@ Treat a supplied image, prompt, paper, and project as different evidence
 sources. State each input's role. A reference image normally supplies visual
 grammar; the target paper supplies scientific content.
 
+For **Iterate**, first write a two-column revision contract:
+
+- **change:** only the defect class named by the user;
+- **preserve:** accepted scientific relationships, canvas, silhouette,
+  density, palette, typography, icons, borders, and unaffected text.
+
+Treat the latest user-accepted prompt or figure as the style authority.
+Preferences found in another session are scientific context only unless the
+current user explicitly adopts them. Do not turn a semantic correction into a
+restyle, simplification, or density change.
+
 If the request is prompt-only, do not call an image-generation tool. If image
 generation is also requested, finish and audit the prompt first, then use the
 applicable image-generation workflow separately.
@@ -49,6 +60,12 @@ Extract a **style fingerprint** without copying scientific content:
 - repeated motifs;
 - negative-space behavior;
 - explicit prohibitions and anti-styles.
+
+For an iteration, convert the accepted fingerprint into a **style lock**.
+Record exact invariants for aspect ratio, macro silhouette, panel count,
+internal whitespace or density, dominant palette, typography, icon family,
+border grammar, and background. An omitted style property remains preserved;
+silence is not permission to redesign it.
 
 Read [reference-analysis.md](references/reference-analysis.md) when the
 reference is dense, contains multiple visual systems, or needs a formal
@@ -87,6 +104,11 @@ verified study result is not clinical validity, a verified artifact is not a
 verified scientific claim, and a pending lane does not identify which internal
 stage is unfinished unless the source says so.
 
+Keep evidence provenance separate from visible method content. Scheduler IDs,
+run numbers, paths, timestamps, and hashes may locate evidence but must not
+appear in a scientific method figure unless the user explicitly requests an
+operations or provenance view. Translate them into semantic labels.
+
 ### 3. Choose structure from semantics
 
 Select a layout because it fits the semantic spine, not merely because the
@@ -109,6 +131,13 @@ Read [prompt-architecture.md](references/prompt-architecture.md) before writing
 a full production prompt. It contains the section order, layout patterns,
 controlled redundancy rules, and the canonical scaffold.
 
+Read [architecture-semantics.md](references/architecture-semantics.md) whenever
+the figure contains model depth, hops, output dimensions, heads, branches,
+residuals, or calibration. Declare these counts independently before drawing.
+In particular, layers are not models, hops are not branches, output components
+are not layer-specific outputs, and a prediction residual is not an internal
+skip connection.
+
 ### 4. Build the information architecture
 
 Map each scientific object to a visual role:
@@ -123,6 +152,15 @@ Map each scientific object to a visual role:
 - failed gates → red marks;
 - verified success → green marks only when evidence licenses them.
 
+Map structural quantities independently:
+
+- model count → separate model containers;
+- sequential depth → layers inside one model container;
+- receptive field → hop rings or progressive graph layers;
+- real computation branches → diverging arrows or lanes;
+- output dimension → one vector/tensor card with named components;
+- additive residual → base + delta → corrected object.
+
 Keep visible labels short. Prefer one to five words; use a second line only
 when it adds essential meaning. Move explanatory prose into the prompt, not
 the figure. Define a verbatim text inventory before styling.
@@ -133,16 +171,18 @@ Order the prompt from global invariants to local detail:
 
 1. use case, asset type, and primary request;
 2. input-image roles and content-isolation rule;
-3. scientific content contract;
-4. canvas and background;
-5. macro visual structure;
-6. typography and exact text;
-7. semantic color and icon language;
-8. one section per panel, lane, or module;
-9. arrow and line rules;
-10. density and legibility;
-11. strict negative constraints;
-12. final validation checklist.
+3. revision scope and style lock when iterating;
+4. scientific content contract;
+5. visible-artifact hygiene;
+6. canvas and background;
+7. macro visual structure;
+8. typography and exact text;
+9. semantic color and icon language;
+10. one section per panel, lane, or module;
+11. arrow and line rules;
+12. density and legibility;
+13. strict negative constraints;
+14. final validation checklist.
 
 Use controlled redundancy only at hierarchy boundaries:
 
@@ -182,6 +222,12 @@ Add constraints against the generator's most plausible mistakes:
 - background tint, texture, mockup framing, or global gradients;
 - generic icon substitution;
 - 3D, photorealistic, dashboard, poster, or SaaS styling when inappropriate.
+- operational IDs, paths, hashes, or timestamps leaking into visible content;
+- accepted palette, density, aspect ratio, or silhouette drifting during a
+  local revision;
+- model layers becoming separate models or outputs;
+- equal layer, hop, and output counts becoming a false one-to-one mapping;
+- prediction-space residuals becoming skip connections or improvement claims.
 
 Express dimensions and percentages as composition targets, not guaranteed
 pixel-perfect controls, unless the selected generation system exposes exact
@@ -195,18 +241,28 @@ Run:
 python scripts/validate_prompt.py <prompt.md>
 ```
 
+For a revision prompt that contains an explicit style lock, run:
+
+```bash
+python scripts/validate_prompt.py --iteration <prompt.md>
+```
+
 Fix all errors. Review warnings with judgment; a warning can be acceptable
 when the task intentionally omits that feature.
 
 Then perform a semantic audit:
 
 - Does every arrow have a scientific meaning?
+- Are model count, depth, hops, branches, and output dimension visually
+  distinct?
 - Are shared and branch-specific objects correctly separated?
 - Are all status colors evidence-licensed?
 - Does exact text match the source?
 - Can a reader recover the semantic spine without the caption?
 - Does the prompt prohibit the reference's original scientific content?
 - Are unknowns visibly unknown rather than aesthetically completed?
+- Is operational provenance absent from visible method content?
+- For an iteration, did every preserved style and density invariant survive?
 
 Read [audit-and-iteration.md](references/audit-and-iteration.md) for the full
 rubric and targeted revision protocol.
@@ -242,9 +298,12 @@ defects before revising:
 - legibility problem;
 - unwanted element.
 
-Revise one defect class at a time. Repeat all invariants affected by the edit
-and explicitly preserve everything else. Do not rewrite the whole prompt for a
-local defect unless the macro structure failed.
+Freeze accepted invariants before editing. Revise one defect class at a time.
+Repeat all invariants affected by the edit and explicitly preserve everything
+else. Do not rewrite the whole prompt for a local defect unless the macro
+structure failed. Simplifying scientific content does not authorize lower
+information density; adding distinguishable concepts does not authorize a new
+palette.
 
 Use [worked-example.md](references/worked-example.md) only when a concrete
 example of the full layered format is helpful; do not copy its subject matter
