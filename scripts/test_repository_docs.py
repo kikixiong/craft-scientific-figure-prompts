@@ -91,6 +91,51 @@ class RepositoryPackagingTests(unittest.TestCase):
             with self.subTest(target=target):
                 self.assertTrue((ROOT / target).exists(), target)
 
+    def test_chinese_readme_has_required_structure(self) -> None:
+        readme = (ROOT / "README.zh-CN.md").read_text(encoding="utf-8")
+        required = (
+            "assets/readme-hero.svg",
+            "README.md",
+            "## 为什么需要这个技能",
+            "## 它能做什么",
+            "## 工作原理",
+            "## 快速开始",
+            "## 在不同 Agent 中使用",
+            "## 验证提示词",
+            "## 项目结构",
+            "## 设计原则",
+            "## 参与贡献",
+            "## 许可证",
+            "Learn",
+            "Adapt",
+            "Template",
+            "Audit",
+            "Iterate",
+            "Python 3.11+",
+        )
+        for text in required:
+            with self.subTest(text=text):
+                self.assertIn(text, readme)
+
+    def test_chinese_readme_local_links_resolve(self) -> None:
+        readme = (ROOT / "README.zh-CN.md").read_text(encoding="utf-8")
+        for target in local_targets(readme):
+            with self.subTest(target=target):
+                self.assertTrue((ROOT / target).exists(), target)
+
+    def test_bilingual_readmes_have_section_parity(self) -> None:
+        english = (ROOT / "README.md").read_text(encoding="utf-8")
+        chinese = (ROOT / "README.zh-CN.md").read_text(encoding="utf-8")
+        self.assertEqual(english.count("\n## "), chinese.count("\n## "))
+        english_targets = local_targets(english)
+        chinese_targets = local_targets(chinese)
+        self.assertIn("README.zh-CN.md", english_targets)
+        self.assertIn("README.md", chinese_targets)
+        self.assertEqual(
+            english_targets - {"README.zh-CN.md"},
+            chinese_targets - {"README.md"},
+        )
+
 
 if __name__ == "__main__":
     unittest.main()
