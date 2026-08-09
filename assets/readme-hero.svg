@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 480" role="img" aria-label="Scientific Figure Prompt Engineer">
+  <title>Scientific Figure Prompt Engineer</title>
+  <desc>A five-stage workflow from reference analysis to validated scientific image-generation prompts.</desc>
+  <defs>
+    <linearGradient id="background" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#F8FAFF"/>
+      <stop offset="0.55" stop-color="#F4F1FF"/>
+      <stop offset="1" stop-color="#ECFEFF"/>
+    </linearGradient>
+    <linearGradient id="brand" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#4F46E5"/>
+      <stop offset="0.55" stop-color="#7C3AED"/>
+      <stop offset="1" stop-color="#0891B2"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="160%">
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#312E81" flood-opacity="0.10"/>
+    </filter>
+  </defs>
+  <rect width="1440" height="480" rx="28" fill="url(#background)"/>
+  <circle cx="118" cy="92" r="54" fill="#C7D2FE" opacity="0.45"/>
+  <circle cx="1320" cy="386" r="82" fill="#A5F3FC" opacity="0.38"/>
+  <text x="720" y="78" text-anchor="middle" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="18" font-weight="700" letter-spacing="3" fill="#6366F1">AGENT SKILL</text>
+  <text x="720" y="130" text-anchor="middle" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="42" font-weight="750" fill="#172554">Scientific Figure Prompt Engineer</text>
+  <text x="720" y="168" text-anchor="middle" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="20" fill="#475569">Reference-aware · Evidence-grounded · Style-consistent</text>
+  <path d="M252 300H1188" stroke="url(#brand)" stroke-width="5" stroke-linecap="round" opacity="0.28"/>
+  <g font-family="Inter, ui-sans-serif, system-ui, sans-serif" filter="url(#shadow)">
+    <g transform="translate(84 232)">
+      <rect width="220" height="140" rx="20" fill="#FFFFFF" stroke="#C7D2FE"/>
+      <circle cx="34" cy="34" r="13" fill="#4F46E5"/>
+      <text x="58" y="41" font-size="15" font-weight="700" fill="#4338CA">01</text>
+      <text x="24" y="88" font-size="20" font-weight="700" fill="#1E293B">Reference</text>
+      <text x="24" y="116" font-size="14" fill="#64748B">visual grammar</text>
+    </g>
+    <g transform="translate(347 232)">
+      <rect width="220" height="140" rx="20" fill="#FFFFFF" stroke="#DDD6FE"/>
+      <circle cx="34" cy="34" r="13" fill="#6366F1"/>
+      <text x="58" y="41" font-size="15" font-weight="700" fill="#4F46E5">02</text>
+      <text x="24" y="88" font-size="20" font-weight="700" fill="#1E293B">Style fingerprint</text>
+      <text x="24" y="116" font-size="14" fill="#64748B">transferable invariants</text>
+    </g>
+    <g transform="translate(610 232)">
+      <rect width="220" height="140" rx="20" fill="#FFFFFF" stroke="#E9D5FF"/>
+      <circle cx="34" cy="34" r="13" fill="#7C3AED"/>
+      <text x="58" y="41" font-size="15" font-weight="700" fill="#6D28D9">03</text>
+      <text x="24" y="88" font-size="20" font-weight="700" fill="#1E293B">Scientific contract</text>
+      <text x="24" y="116" font-size="14" fill="#64748B">evidence and semantics</text>
+    </g>
+    <g transform="translate(873 232)">
+      <rect width="220" height="140" rx="20" fill="#FFFFFF" stroke="#CFFAFE"/>
+      <circle cx="34" cy="34" r="13" fill="#0E7490"/>
+      <text x="58" y="41" font-size="15" font-weight="700" fill="#0E7490">04</text>
+      <text x="24" y="88" font-size="20" font-weight="700" fill="#1E293B">Production prompt</text>
+      <text x="24" y="116" font-size="14" fill="#64748B">rendering contract</text>
+    </g>
+    <g transform="translate(1136 232)">
+      <rect width="220" height="140" rx="20" fill="#FFFFFF" stroke="#A5F3FC"/>
+      <circle cx="34" cy="34" r="13" fill="#0891B2"/>
+      <text x="58" y="41" font-size="15" font-weight="700" fill="#0E7490">05</text>
+      <text x="24" y="88" font-size="20" font-weight="700" fill="#1E293B">Validation</text>
+      <text x="24" y="116" font-size="14" fill="#64748B">semantic audit</text>
+    </g>
+  </g>
+  <g fill="#FFFFFF" stroke="#6366F1" stroke-width="3">
+    <circle cx="325" cy="301" r="7"/><circle cx="588" cy="301" r="7"/>
+    <circle cx="851" cy="301" r="7"/><circle cx="1114" cy="301" r="7"/>
+  </g>
+  <text x="720" y="430" text-anchor="middle" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="15" font-weight="600" fill="#475569">Scientific truth first. Visual consistency throughout.</text>
+</svg>
