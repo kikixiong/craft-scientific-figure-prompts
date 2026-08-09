@@ -15,6 +15,8 @@
   <img alt="Python 3.11+" src="https://img.shields.io/badge/Python-3.11%2B-0891B2">
 </p>
 
+<p align="center"><a href="#快速开始">从快速开始入门</a></p>
+
 ## 为什么需要这个技能
 
 精美的科学图仍然可能是错的。提示词可能会不慎照搬参考图的研究对象、虚构没有依据的证据，
@@ -112,36 +114,58 @@ Agent 集成以文件为基础，无需导入任何运行时软件包。
 下面是一段信息准确、可以直接复制使用的初始请求：
 
 ```text
-Use craft-scientific-figure-prompts in Adapt mode.
+请以 Adapt 模式使用 craft-scientific-figure-prompts。
 
-Treat the attached figure as visual grammar only. Use my paper as the
-scientific source of truth. Produce a style fingerprint, a scientific content
-contract, a copy-paste production prompt, and an audit note. Do not generate
-an image yet.
+只把附带的图作为视觉语法参考。以我的论文作为科学事实的权威来源。请生成一份风格指纹、
+一份科学内容契约、一段可以直接复制使用的生产级提示词和一份审计说明。暂时不要生成图像。
 ```
 
-请将 “my paper” 替换为你实际拥有的权威资料。如果某个主张、数值、公式、结果或方向没有出现在
+请将“我的论文”替换为你实际拥有的权威资料。如果某个主张、数值、公式、结果或方向没有出现在
 该资料中，技能应将其保留为未知，而不是为了视觉完整性擅自补齐。
 
 ## 验证提示词
 
-仓库内含无需第三方依赖的 Python 验证器。由于风格配置验证器使用标准库中的 `tomllib`
-模块，因此需要 Python 3.11+。
+仓库内含无需第三方依赖的 Python 验证器。请在目标项目的根目录运行它们，使
+`.codex/figure-style.toml` 和提示词路径都相对于该项目解析；验证器脚本的路径则单独锚定到
+已安装的技能目录。
 
-保存项目配置和生产级提示词后，请严格按以下命令执行两项检查：
+以下命令中的 `python3` 必须指向 Python 3.11+，因为风格配置验证器使用标准库中的
+`tomllib` 模块。如果你的 `python3` 版本较旧，请换成 `python3.11` 等 3.11+ 解释器命令。
+请先选择与你的安装方式对应的 `SKILL_ROOT` 行，再运行普通生产级提示词检查：
 
 ```bash
-python scripts/validate_style_profile.py .codex/figure-style.toml
-python scripts/validate_prompt.py \
+# Codex 或 Cursor 安装路径（默认）：
+SKILL_ROOT="$HOME/.agents/skills/craft-scientific-figure-prompts"
+# Claude Code 安装路径（改用此行）：
+# SKILL_ROOT="$HOME/.claude/skills/craft-scientific-figure-prompts"
+# 仓库克隆在其他位置（替换为仓库的绝对路径）：
+# SKILL_ROOT="/absolute/path/to/craft-scientific-figure-prompts"
+
+python3 "$SKILL_ROOT/scripts/validate_style_profile.py" \
+  .codex/figure-style.toml
+python3 "$SKILL_ROOT/scripts/validate_prompt.py" \
   --style-profile .codex/figure-style.toml \
   path/to/production-prompt.md
+
+# Template 模式的提示词会有意保留明确占位符：
+python3 "$SKILL_ROOT/scripts/validate_prompt.py" \
+  --style-profile .codex/figure-style.toml \
+  --allow-placeholders \
+  path/to/template-prompt.md
+
+# Iterate 模式的提示词必须明确规定修订范围和风格锁定：
+python3 "$SKILL_ROOT/scripts/validate_prompt.py" \
+  --style-profile .codex/figure-style.toml \
+  --iteration \
+  path/to/iteration-prompt.md
 ```
 
 配置验证器会检查必填字段、状态、颜色、占位符和全项目不变量。提示词验证器会检查分层提示词
 契约、未解决的占位符、风格配置绑定，以及常见的语义失败信号。静态验证是一道门槛，不能取代
 对照科学资料审查提示词。
 
-对于明确规定修订范围和风格锁定的迭代提示词，请为 `validate_prompt.py` 添加 `--iteration`。
+只有 Template 模式的骨架有意保留明确占位符时，才使用 `--allow-placeholders`。对于明确规定
+修订范围和风格锁定的迭代提示词，请使用 `--iteration`。
 
 ## 项目级视觉一致性
 

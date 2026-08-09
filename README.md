@@ -15,6 +15,8 @@
   <img alt="Python 3.11+" src="https://img.shields.io/badge/Python-3.11%2B-0891B2">
 </p>
 
+<p align="center"><a href="#quick-start">Start with the quick start</a></p>
+
 ## Why this skill
 
 A polished scientific figure can still be wrong. A prompt may accidentally
@@ -139,18 +141,42 @@ skill should preserve it as unknown rather than fill the gap aesthetically.
 
 ## Validate your prompts
 
-The repository includes dependency-free Python validators. Python 3.11+ is
-required because the style-profile validator uses the standard-library
-`tomllib` module.
+The repository includes dependency-free Python validators. Run them from the
+target project's root so `.codex/figure-style.toml` and prompt paths resolve
+inside that project. The script path is anchored separately to the installed
+skill folder.
 
-After saving a project profile and production prompt, run both checks exactly
-as follows:
+In the commands below, `python3` must name a Python 3.11+ interpreter because
+the style-profile validator uses the standard-library `tomllib` module. If
+your `python3` is older, replace it with a 3.11+ command such as `python3.11`.
+Select the `SKILL_ROOT` line that matches your installation, then run the
+normal production-prompt checks:
 
 ```bash
-python scripts/validate_style_profile.py .codex/figure-style.toml
-python scripts/validate_prompt.py \
+# Codex or Cursor installation (default):
+SKILL_ROOT="$HOME/.agents/skills/craft-scientific-figure-prompts"
+# Claude Code installation (use this line instead):
+# SKILL_ROOT="$HOME/.claude/skills/craft-scientific-figure-prompts"
+# Repository cloned elsewhere (replace with your absolute clone path):
+# SKILL_ROOT="/absolute/path/to/craft-scientific-figure-prompts"
+
+python3 "$SKILL_ROOT/scripts/validate_style_profile.py" \
+  .codex/figure-style.toml
+python3 "$SKILL_ROOT/scripts/validate_prompt.py" \
   --style-profile .codex/figure-style.toml \
   path/to/production-prompt.md
+
+# Template-mode prompts intentionally retain explicit placeholders:
+python3 "$SKILL_ROOT/scripts/validate_prompt.py" \
+  --style-profile .codex/figure-style.toml \
+  --allow-placeholders \
+  path/to/template-prompt.md
+
+# Iterate-mode prompts require an explicit revision scope and style lock:
+python3 "$SKILL_ROOT/scripts/validate_prompt.py" \
+  --style-profile .codex/figure-style.toml \
+  --iteration \
+  path/to/iteration-prompt.md
 ```
 
 The profile validator checks required fields, statuses, colors, placeholders,
@@ -159,8 +185,9 @@ contract, unresolved placeholders, style-profile binding, and common semantic
 failure signals. Static validation is a gate, not a substitute for reviewing
 the prompt against the scientific source.
 
-For an iteration prompt with an explicit revision scope and style lock, add
-`--iteration` to `validate_prompt.py`.
+Use `--allow-placeholders` only for a Template-mode scaffold whose explicit
+placeholders are intentional. Use `--iteration` for an iteration prompt with
+an explicit revision scope and style lock.
 
 ## Project-wide visual consistency
 

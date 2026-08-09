@@ -1,6 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 480" role="img" aria-label="Scientific Figure Prompt Engineer">
-  <title>Scientific Figure Prompt Engineer</title>
-  <desc>A five-stage workflow from reference analysis to validated scientific image-generation prompts.</desc>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 480" role="img" aria-labelledby="title desc">
+  <title id="title">Scientific Figure Prompt Engineer</title>
+  <desc id="desc">A five-stage workflow from reference analysis to validated scientific image-generation prompts.</desc>
   <defs>
     <linearGradient id="background" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0" stop-color="#F8FAFF"/>
