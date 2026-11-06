@@ -10,6 +10,10 @@ layout hierarchy, and visual character across projects. For a requested figure,
 complete the prompt-to-image workflow in the same task. An explicit prompt-only
 request stops after prompt validation.
 
+Resolve project paths and available tools from the current user's environment.
+Keep personal host/account mappings and deployment records outside the shared
+skill; examples use project-relative paths or descriptive placeholders.
+
 ## Resolve the request
 
 Classify the task before writing:

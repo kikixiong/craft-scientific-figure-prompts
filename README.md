@@ -35,6 +35,11 @@ calls the available image tool and inspects the result in the same task.
 Explicit prompt-only requests stop after validation. Learn, Template and
 audit-only requests do not trigger generation.
 
+This is a portable, public skill. It does not require the maintainer's servers,
+accounts or private network. Paths resolve in your own environment, and image
+generation uses the tools available to your agent. Personal configuration and
+deployment records belong outside the shared skill.
+
 ## What it can do
 
 Choose the mode that matches the work in front of you:
