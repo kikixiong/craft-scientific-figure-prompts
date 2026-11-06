@@ -1,13 +1,14 @@
 ---
 name: craft-scientific-figure-prompts
-description: Analyze reference figures and their prompts, extract transferable visual and organizational grammar, maintain a project-wide style profile across multiple figures, and produce robust model-agnostic prompts for scientific overview figures, method diagrams, architecture schematics, graphical abstracts, and research posters. Use when Codex must learn or preserve figure style, adapt it to a paper, thesis, proposal, or technical project, rewrite or audit a long image-generation prompt, keep a multi-figure project visually consistent, preserve scientific evidence states, or iteratively improve a generated figure without copying the reference's scientific content.
+description: Learn reference-figure style, preserve scientific meaning and project-wide visual consistency, and build audited prompts for overview figures, method diagrams, architecture schematics, graphical abstracts, and research posters. For a finished-figure request, continue from the prompt to Image2/image generation and visual inspection in explicit steps. Also use for prompt-only drafting, templates, audits, and targeted figure revisions without copying the reference's scientific content.
 ---
 
 # Craft Scientific Figure Prompts
 
 Turn references into rendering contracts that preserve scientific meaning,
-layout hierarchy, and visual character across projects. Produce prompts by
-default; do not generate an image unless the user separately requests it.
+layout hierarchy, and visual character across projects. For a requested figure,
+complete the prompt-to-image workflow in the same task. An explicit prompt-only
+request stops after prompt validation.
 
 ## Resolve the request
 
@@ -35,9 +36,30 @@ Preferences found in another session are scientific context only unless the
 current user explicitly adopts them. Do not turn a semantic correction into a
 restyle, simplification, or density change.
 
-If the request is prompt-only, do not call an image-generation tool. If image
-generation is also requested, finish and audit the prompt first, then use the
-applicable image-generation workflow separately.
+Choose delivery separately from the modes above:
+
+- **Prompt only:** requests to write a prompt, Learn, Template, or audit without
+  generating a figure. Do not call an image tool or render unresolved templates.
+- **Prompt + image:** requests to draw/generate a figure, revise an existing
+  image, or "generate the prompt, then use Image2". Finish and audit the prompt,
+  then actually call the available image tool; do not stop at a suggested prompt
+  or ask for the same generation permission again.
+- If the user says "show me the prompt first and wait", respect that checkpoint.
+  Otherwise the stages below are progress updates, not approval gates.
+
+Use four visible steps for a figure request:
+
+1. **Scientific content and style** — inspect inputs and establish the contracts
+   using core workflow steps 0-4.
+2. **Production prompt** — write, save and audit it using steps 5-7.
+3. **Image2 / rendering** — submit that full prompt and the relevant images using
+   step 8; keep the requested model identity honest.
+4. **Visual inspection and delivery** — inspect the actual output using step 9,
+   then return the image, prompt and audit note.
+
+This workflow covers conceptual scientific illustrations. Use deterministic
+plotting tools for measured data plots, fitted curves or exact quantitative
+charts; never have the image model invent or redraw measured values as evidence.
 
 ## Follow the core workflow
 
@@ -309,6 +331,39 @@ Then perform a semantic audit:
 Read [audit-and-iteration.md](references/audit-and-iteration.md) for the full
 rubric and targeted revision protocol.
 
+### 8. Render with Image2 or the available image tool
+
+For **Prompt + image** delivery, read
+[image2-workflow.md](references/image2-workflow.md) and the available imagegen
+skill/tool instructions. Call the actual tool with the audited production
+prompt and the required reference/edit images. The prompt must materialize the
+style profile and exact visible text; a file path or a summary is not enough.
+
+Use the native image-generation tool when available. When a supported model
+selector is exposed and Image2 is requested, select `gpt-image-2`. Do not invent
+a model parameter for a tool that has none, or claim its hidden backend is a
+verified Image2 version. Preserve explicit model requirements; do not silently
+substitute another model. See the reference for exact-model and unavailable-tool
+handling, including the separately authorized API/CLI path.
+
+### 9. Inspect the generated figure and deliver
+
+Inspect the actual pixels against the content contract, text inventory and style
+lock. Check scientific relationships, arrows, counts, labels, evidence states,
+legibility, clipping and consistency with accepted figures. Static prompt checks
+do not certify the generated image. If no image is returned or viewable, report
+that limitation rather than claiming visual verification.
+
+For a clear defect, make at most one targeted correction within the authorized
+scope and budget, then inspect again; preserve accepted invariants. Stop if the
+same defect remains, the tool fails, or the budget is exhausted, and report the
+remaining issue. Save a new version rather than replacing an accepted image.
+
+Display the resulting image. For project deliverables, copy the actual returned
+artifact into the project and report its real path; do not invent a download
+link or file location. Keep the prompt and brief audit beside it. Record the
+tool used and model/version only when the tool or request actually establishes it.
+
 ## Deliver useful artifacts
 
 Unless the user requests another format, return:
@@ -319,11 +374,17 @@ Unless the user requests another format, return:
 4. the complete copy-paste **production prompt**;
 5. a short **audit note** listing assumptions and intentionally pending items.
 
+For **Prompt + image**, also return the generated image and its actual saved
+location when available, with the visual inspection outcome. A prompt alone is
+an incomplete result when generation was requested; explain any tool blocker.
+
 When saving files, use descriptive names such as:
 
 - `<project>-figure-grammar.md`
 - `<project>-scientific-content-contract.md`
 - `<project>-imagegen-prompt.md`
+- `<project>-figure-v1.png` (or the format actually returned)
+- `<project>-figure-audit.md`
 
 Keep project facts out of the global skill itself. Add reusable failure modes
 or layout knowledge here only after they generalize across tasks.

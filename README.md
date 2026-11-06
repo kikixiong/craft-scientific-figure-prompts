@@ -2,7 +2,7 @@
   <img src="assets/readme-hero.svg" width="100%" alt="Scientific Figure Prompt Engineer — a five-stage workflow from reference analysis to prompt validation">
 </p>
 
-<p align="center"><strong>Turn reference figures into scientifically faithful, style-consistent image-generation prompts.</strong></p>
+<p align="center"><strong>Turn references into scientific figure prompts, then generate and inspect the requested images.</strong></p>
 
 <p align="center">
   <strong>English</strong> · <a href="README.zh-CN.md">简体中文</a>
@@ -30,8 +30,10 @@ of scientific truth, records what the figure may and may not claim, and writes
 a production prompt as a rendering contract rather than a loose collection of
 style adjectives.
 
-By default, the skill produces and audits prompts. It generates an image only
-when you separately request image generation.
+For a finished-figure request, the skill writes and audits the prompt, then
+calls the available image tool and inspects the result in the same task.
+Explicit prompt-only requests stop after validation. Learn, Template and
+audit-only requests do not trigger generation.
 
 ## What it can do
 
@@ -40,7 +42,7 @@ Choose the mode that matches the work in front of you:
 | Mode | Use it when you need to… | Primary result |
 | --- | --- | --- |
 | **Learn** | understand the transferable visual and organizational grammar of a reference | a style fingerprint without copied scientific content |
-| **Adapt** | turn a paper, thesis, proposal, or technical brief into a new figure prompt | a scientific content contract and production prompt |
+| **Adapt** | turn a paper, thesis, proposal, or technical brief into a new figure prompt | a scientific content contract, production prompt and requested figure |
 | **Template** | create a reusable scaffold for a recurring figure type | a structured prompt with explicit placeholders |
 | **Audit** | inspect an existing prompt or generated figure for semantic, evidence, layout, or style failures | a classified defect report and targeted fixes |
 | **Iterate** | correct one failed constraint while preserving an accepted figure's invariants | a revision contract and narrowly scoped prompt update |
@@ -59,6 +61,8 @@ flowchart LR
     B --> C[Scientific contract]
     C --> D[Production prompt]
     D --> E[Validation]
+    E -->|Figure requested| F[Image2 / render]
+    F --> G[Visual inspection]
 ```
 
 1. **Reference** — inspect the figure for canvas, hierarchy, typography,
@@ -72,6 +76,10 @@ flowchart LR
    the result from global constraints down to panels, labels, and connectors.
 5. **Validation** — run static checks, then audit scientific meaning, status
    scope, architecture semantics, legibility, and project-wide style binding.
+6. **Image2 / render** — call the actual available image tool with the full
+   audited prompt and reference/edit images when a figure is requested.
+7. **Visual inspection** — check the returned image, make at most one targeted
+   correction within scope and budget, and deliver the image with its prompt.
 
 Scientific truth and evidence state outrank aesthetics throughout. A reference
 normally supplies visual grammar; your paper, repository, or brief supplies
@@ -87,8 +95,10 @@ The portable flow is intentionally simple:
 3. Provide a reference figure and the target paper, thesis, repository, or
    scientific brief.
 4. Choose **Learn**, **Adapt**, **Template**, **Audit**, or **Iterate** mode.
-5. Save the resulting artifacts and validate the prompt and any project style
-   profile before using them for image generation.
+5. Say whether you want only the prompt or a finished figure. For a figure, the
+   agent reports four steps: **content/style → audited prompt → render → visual
+   inspection**, and continues without a redundant approval request.
+6. Save the image, prompt and audit note. A prompt-only request stops before rendering.
 
 For [Codex](https://developers.openai.com/codex/skills) or
 [Cursor](https://cursor.com/docs/skills), install the folder in the compatible
@@ -124,7 +134,18 @@ Agent integration is file-based; there is no runtime package to import.
 | [Claude Code](https://code.claude.com/docs/en/skills) | official Skills documentation | clone to `~/.claude/skills/craft-scientific-figure-prompts` and invoke the skill |
 | Other Markdown-capable agents | the agent's own instruction-loading documentation | clone anywhere, then explicitly ask the agent to read this repository's `SKILL.md` |
 
-Here is a truthful, copy-paste starting request:
+For the full prompt-to-image workflow:
+
+```text
+Use craft-scientific-figure-prompts in Adapt mode.
+Use my paper for scientific content and the attached figure for visual style.
+Step 1: establish the content and style. Step 2: write, save and audit the prompt.
+Step 3: call Image2/the available native image tool to generate the figure.
+Step 4: inspect the image and return it with the final prompt and audit note.
+Continue through all four steps without stopping after the prompt.
+```
+
+For prompt-only work:
 
 ```text
 Use craft-scientific-figure-prompts in Adapt mode.
@@ -134,6 +155,15 @@ scientific source of truth. Produce a style fingerprint, a scientific content
 contract, a copy-paste production prompt, and an audit note. Do not generate
 an image yet.
 ```
+
+“Image2” refers to the requested GPT Image 2 workflow. Use `gpt-image-2` when
+the selected tool exposes model selection. A native tool may not expose its
+backend version; the agent must disclose that rather than claim a verified
+model. An exact-model requirement must be honored, not silently substituted.
+API/CLI fallback requires explicit authorization and configured credentials;
+the native Codex tool needs no API key. Agents without an image tool return the
+ready prompt and explain the missing capability. See the
+[Image2 workflow](references/image2-workflow.md).
 
 Replace “my paper” with the authoritative source you actually have. If a
 claim, quantity, formula, result, or direction is absent from that source, the
@@ -227,6 +257,8 @@ The most useful entry points are:
   — the profile lifecycle, precedence rules, exceptions, and validation flow.
 - [`references/audit-and-iteration.md`](references/audit-and-iteration.md) — the
   audit rubric and targeted revision protocol.
+- [`references/image2-workflow.md`](references/image2-workflow.md) — generation
+  routing, exact-model handling, reference attachment and visual inspection.
 - [`references/worked-example.md`](references/worked-example.md) — a concrete
   example of the layered prompt format.
 - [`assets/project-figure-style.toml`](assets/project-figure-style.toml) — the

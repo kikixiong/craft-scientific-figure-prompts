@@ -242,8 +242,8 @@ class RepositoryPackagingTests(unittest.TestCase):
         chinese = (ROOT / "README.zh-CN.md").read_text(encoding="utf-8")
         required_pairs = (
             (
-                "generates an image only when you separately request image generation",
-                "只有在你另行提出图像生成请求时，它才会生成图像",
+                "Explicit prompt-only requests stop after validation",
+                "明确要求只要提示词时，会在验证后停止",
             ),
             (
                 "reference normally supplies visual grammar",

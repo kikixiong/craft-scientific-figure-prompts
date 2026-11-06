@@ -2,7 +2,7 @@
   <img src="assets/readme-hero.svg" width="100%" alt="Scientific Figure Prompt Engineer — 从参考图分析到提示词验证的五阶段工作流">
 </p>
 
-<p align="center"><strong>将参考图转化为科学含义准确、视觉风格一致的图像生成提示词。</strong></p>
+<p align="center"><strong>将参考图转化为科研绘图提示词，再直接生成并检查所需图像。</strong></p>
 
 <p align="center">
   <a href="README.md">English</a> · <strong>简体中文</strong>
@@ -27,8 +27,8 @@
 它将视觉语法的来源与科学事实的来源分开，记录图中可以和不可以表达的内容，并把生产级
 提示词写成一份渲染契约，而不是一串松散的风格形容词。
 
-默认情况下，这个技能只生成并审计提示词。只有在你另行提出图像生成请求时，它才会生成
-图像。
+请求成图时，技能会在同一任务中编写并审计提示词、调用可用生图工具，再检查成图。
+明确要求只要提示词时，会在验证后停止。Learn、Template 和仅审查请求不会触发生图。
 
 ## 它能做什么
 
@@ -37,7 +37,7 @@
 | 模式 | 适用场景 | 主要产物 |
 | --- | --- | --- |
 | **Learn** | 理解参考图中可迁移的视觉与组织语法 | 一份不复制科学内容的风格指纹 |
-| **Adapt** | 将论文、学位论文、项目申请书或技术简报转化为新的绘图提示词 | 科学内容契约和生产级提示词 |
+| **Adapt** | 将论文、学位论文、项目申请书或技术简报转化为新的绘图提示词 | 科学内容契约、生产级提示词和所需成图 |
 | **Template** | 为经常使用的图形类型创建可复用骨架 | 带有明确占位符的结构化提示词 |
 | **Audit** | 检查已有提示词或生成图中的语义、证据、布局或风格问题 | 分类后的缺陷报告和针对性修复方案 |
 | **Iterate** | 在保留已认可图形不变量的同时，修正一个未满足的约束 | 修订契约和范围严格受控的提示词更新 |
@@ -55,6 +55,8 @@ flowchart LR
     B --> C[科学契约]
     C --> D[生产级提示词]
     D --> E[验证]
+    E -->|请求成图| F[Image2 / 生图]
+    F --> G[成图检查]
 ```
 
 1. **参考图** — 检查画布、层级、字体、配色、图标、容器、箭头和信息密度的视觉语法。
@@ -65,6 +67,8 @@ flowchart LR
 4. **生产级提示词** — 将科学对象映射到视觉角色，并从全局约束逐层规定到面板、标签和连接线。
 5. **验证** — 先执行静态检查，再审计科学含义、状态作用域、架构语义、可读性，以及全项目
    风格绑定。
+6. **Image2 / 生图** — 请求成图时，将完整、审计后的提示词与参考图或编辑目标传给实际可用的生图工具。
+7. **成图检查** — 检查返回的图像，在已授权范围和预算内最多做一次针对性修正，然后交付图像与提示词。
 
 整个过程中，科学事实和证据状态的优先级都高于美观。参考图通常只提供视觉语法；论文、
 代码仓库或技术简报才提供目标图的科学内容。
@@ -77,7 +81,9 @@ flowchart LR
 2. 让 Agent 自动发现 `SKILL.md`，或明确要求它读取该文件。
 3. 提供一张参考图，以及目标论文、学位论文、代码仓库或科学简报。
 4. 选择 **Learn**、**Adapt**、**Template**、**Audit** 或 **Iterate** 模式。
-5. 保存生成的产物，并在将它们用于图像生成之前，验证提示词和所有项目风格配置。
+5. 指定只要提示词还是需要成图。请求成图时，Agent 按 **内容与风格 → 提示词与审计 → 生图 → 成图检查**
+   四步汇报并连续完成，不重复询问生图许可。
+6. 保存图像、提示词和审计说明；只要提示词的请求在生图前停止。
 
 对于 [Codex](https://developers.openai.com/codex/skills) 或
 [Cursor](https://cursor.com/docs/skills)，请将目录安装到兼容的用户级技能路径：
@@ -111,7 +117,18 @@ Agent 集成以文件为基础，无需导入任何运行时软件包。
 | [Claude Code](https://code.claude.com/docs/en/skills) | 官方 Skills 文档 | 克隆到 `~/.claude/skills/craft-scientific-figure-prompts`，然后调用该技能 |
 | 其他能读取 Markdown 的 Agent | 相应 Agent 自身的指令加载文档 | 克隆到任意位置，再明确要求 Agent 读取本仓库的 `SKILL.md` |
 
-下面是一段信息准确、可以直接复制使用的初始请求：
+完整的“提示词 → 成图”请求可以直接复制：
+
+```text
+请以 Adapt 模式使用 craft-scientific-figure-prompts。
+以我的论文为科学内容依据，附图为视觉风格参考。
+Step 1：明确内容与风格。Step 2：生成、保存并审计完整 prompt。
+Step 3：调用 Image2／当前原生生图工具直接生成图像。
+Step 4：检查成图，返回图像、最终 prompt 和审计说明。
+连续完成四步，不要在生成 prompt 后停下来。
+```
+
+只要提示词时，可以这样请求：
 
 ```text
 请以 Adapt 模式使用 craft-scientific-figure-prompts。
@@ -119,6 +136,12 @@ Agent 集成以文件为基础，无需导入任何运行时软件包。
 只把附带的图作为视觉语法参考。以我的论文作为科学事实的权威来源。请生成一份风格指纹、
 一份科学内容契约、一段可以直接复制使用的生产级提示词和一份审计说明。暂时不要生成图像。
 ```
+
+“Image2”表示所请求的 GPT Image 2 工作流。工具支持选模型时，使用 `gpt-image-2`。
+原生工具可能不暴露底层版本；Agent 必须说明这一点，不能声称已验证模型身份。
+明确要求精确模型时必须遵守，不能暗中替换。API/CLI 备用路径需明确授权且已配置凭据；
+Codex 原生生图工具不需要 API key。没有生图工具的 Agent 应交付可用 prompt 并说明能力缺口。
+详见 [Image2 工作流](references/image2-workflow.md)。
 
 请将“我的论文”替换为你实际拥有的权威资料。如果某个主张、数值、公式、结果或方向没有出现在
 该资料中，技能应将其保留为未知，而不是为了视觉完整性擅自补齐。
@@ -198,6 +221,7 @@ python3 "$SKILL_ROOT/scripts/validate_prompt.py" \
 - [`references/project-style-profile.md`](references/project-style-profile.md) — 配置生命周期、
   优先级规则、例外和验证流程。
 - [`references/audit-and-iteration.md`](references/audit-and-iteration.md) — 审计准则和针对性修订流程。
+- [`references/image2-workflow.md`](references/image2-workflow.md) — 生图调用、精确模型处理、参考图传入和成图检查。
 - [`references/worked-example.md`](references/worked-example.md) — 分层提示词格式的具体示例。
 - [`assets/project-figure-style.toml`](assets/project-figure-style.toml) — 标准项目风格模板。
 - [`scripts/validate_prompt.py`](scripts/validate_prompt.py) — 生产级提示词验证器。
